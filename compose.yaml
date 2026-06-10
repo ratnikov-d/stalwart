@@ -1,0 +1,42 @@
+services:
+  stalwart:
+    image: stalwartlabs/mail-server:latest
+    container_name: stalwart
+
+    hostname: ${FQDN:-not-configured.invalid}
+
+    environment:
+      TZ: ${TZ:-Europe/Moscow}
+
+    restart: unless-stopped
+
+    networks:
+      - shared-net
+
+    ports:
+      - "25:25/tcp"
+      - "143:143/tcp"
+      - "465:465/tcp"
+      - "587:587/tcp"
+      - "993:993/tcp"
+
+    volumes:
+      - stalwart-data:/opt/stalwart-mail
+
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.stalwart.rule=Host(`${FQDN:-not-configured.invalid}`)
+      - traefik.http.routers.stalwart.entrypoints=websecure
+      - traefik.http.routers.stalwart.tls.certresolver=letsencrypt
+
+      # Проверить после запуска фактический порт Web UI
+      - traefik.http.services.stalwart.loadbalancer.server.port=8080
+
+volumes:
+  stalwart-data:
+    name: stalwart-data
+
+networks:
+  shared-net:
+    external: true

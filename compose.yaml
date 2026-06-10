@@ -21,7 +21,7 @@ services:
       - "993:993/tcp"
 
     volumes:
-      - stalwart-data:/opt/stalwart-mail
+      - stalwart-data:/var/lib/stalwart
 
     labels:
       - traefik.enable=true

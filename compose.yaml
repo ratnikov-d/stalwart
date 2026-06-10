@@ -7,7 +7,7 @@ services:
 
     environment:
       TZ: ${TZ:-Europe/Moscow}
-      # STALWART_RECOVERY_ADMIN: ${RECOVERY_ADMIN:-admin:ChangeMeNow123!}
+      STALWART_RECOVERY_ADMIN: ${RECOVERY_ADMIN:-admin:ChangeMeNow123!}
 
     restart: unless-stopped
 

@@ -22,6 +22,7 @@ services:
 
     volumes:
       - stalwart-data:/var/lib/stalwart
+      - certs:/certs:ro
 
     labels:
       - traefik.enable=true
@@ -36,6 +37,9 @@ services:
 volumes:
   stalwart-data:
     name: stalwart-data
+ 
+  certs:
+    external: true
 
 networks:
   shared-net:

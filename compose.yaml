@@ -23,6 +23,7 @@ services:
 
     volumes:
       - stalwart-data:/var/lib/stalwart
+      - stalwart-config:/etc/stalwart
       - certs:/certs:ro
 
     healthcheck:
@@ -45,7 +46,10 @@ services:
 volumes:
   stalwart-data:
     name: stalwart-data
- 
+
+  stalwart-config:
+    name: stalwart-config
+
   certs:
     external: true
 

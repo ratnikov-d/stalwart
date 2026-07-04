@@ -7,7 +7,7 @@ services:
 
     environment:
       TZ: ${TZ:-Europe/Moscow}
-      # STALWART_RECOVERY_ADMIN: ${RECOVERY_ADMIN:-admin:ChangeMeNow123!}
+      STALWART_RECOVERY_ADMIN: ${RECOVERY_ADMIN:-admin:ChangeMeNow123!}
 
     restart: unless-stopped
 
@@ -20,6 +20,9 @@ services:
       - "465:465/tcp"
       - "587:587/tcp"
       - "993:993/tcp"
+    
+    expose:
+      - "8080"
 
     volumes:
       - stalwart-data:/var/lib/stalwart

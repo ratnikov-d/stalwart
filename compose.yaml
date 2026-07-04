@@ -23,11 +23,11 @@ services:
     
     expose:
       - "8080"
+      - "443"
 
     volumes:
       - stalwart-data:/var/lib/stalwart
       - stalwart-config:/etc/stalwart
-      - certs:/certs:ro
 
     # healthcheck:
     #   test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080 >/dev/null || exit 1"]
@@ -39,12 +39,16 @@ services:
     labels:
       - traefik.enable=true
 
-      - traefik.http.routers.stalwart.rule=Host(`${FQDN:-not-configured.invalid}`)
+      - traefik.http.routers.stalwart.rule=Host(`${ADMINFQDN:-not-configured.invalid}`)
       - traefik.http.routers.stalwart.entrypoints=websecure
+      - traefik.http.routers.stalwart.tls=true
       - traefik.http.routers.stalwart.tls.certresolver=letsencrypt
-
-      # Проверить после запуска фактический порт Web UI
       - traefik.http.services.stalwart.loadbalancer.server.port=8080
+
+      - traefik.tcp.routers.mail.rule=HostSNI(`${FQDN:-not-configured.invalid}`)
+      - traefik.tcp.routers.mail.entrypoints=websecure
+      - traefik.tcp.routers.mail.tls.passthrough=true
+      - traefik.tcp.services.mail.loadbalancer.server.port=443
 
 volumes:
   stalwart-data:

@@ -29,30 +29,32 @@ services:
       - stalwart-data:/var/lib/stalwart
       - stalwart-config:/etc/stalwart
 
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080 >/dev/null || exit 1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 60s
+
     labels:
       - traefik.enable=true
       - traefik.docker.network=shared-net
       
-      # HTTP роутер для админки
       - traefik.http.routers.stalwart.rule=Host(`${ADMINFQDN:-not-configured.invalid}`)
       - traefik.http.routers.stalwart.entrypoints=websecure
       - traefik.http.routers.stalwart.tls=true
       - traefik.http.routers.stalwart.tls.certresolver=letsencrypt
       - traefik.http.services.stalwart.loadbalancer.server.port=8080
 
-      # TCP роутер для почты с ProxyProtocol через ServersTransport
       - traefik.tcp.routers.mail.rule=HostSNI(`${FQDN:-not-configured.invalid}`)
       - traefik.tcp.routers.mail.entrypoints=websecure
       - traefik.tcp.routers.mail.tls.passthrough=true
-      
-      # Применяем ServersTransport к роутеру
-      - traefik.tcp.routers.mail.serversTransport=mail-transport
-      
-      # Создаем ServersTransport с ProxyProtocol
-      - traefik.tcp.serversTransports.mail-transport.proxyProtocol.version=2
-      
-      # Сервис
       - traefik.tcp.services.mail.loadbalancer.server.port=443
+      - traefik.tcp.routers.mail.serversTransport=mail-transport
+      - traefik.tcp.serversTransports.mail-transport.proxyProtocol.version=2
+
+
+
 
 volumes:
   stalwart-data:

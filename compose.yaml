@@ -52,12 +52,7 @@ services:
       - traefik.tcp.routers.mail.tls.passthrough=true
 
       - traefik.tcp.services.mail.loadbalancer.server.port=443
-
-      #################################################################
-      # Deprecated Proxy Protocol
-      #################################################################
-
-      - traefik.tcp.services.mail.loadbalancer.proxyProtocol.version=2
+      - traefik.tcp.services.mail.loadbalancer.serverstransport=mail-transport@file
 
 volumes:
   stalwart-data:

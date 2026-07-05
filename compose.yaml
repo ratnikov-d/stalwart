@@ -52,7 +52,7 @@ services:
       - traefik.tcp.routers.mail.tls.passthrough=true
 
       - traefik.tcp.services.mail.loadbalancer.server.port=443
-      - traefik.tcp.services.mail.loadbalancer.serverstransport=mail-transport@file
+      - traefik.tcp.services.mail.loadbalancer.serverstransport=tcp-transport-v1@file
 
 volumes:
   stalwart-data:

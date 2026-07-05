@@ -2,59 +2,62 @@ services:
   stalwart:
     image: stalwartlabs/stalwart:latest
     container_name: stalwart
-
     hostname: ${FQDN:-not-configured.invalid}
+
+    restart: unless-stopped
 
     environment:
       TZ: ${TZ:-Europe/Moscow}
       STALWART_RECOVERY_ADMIN: ${RECOVERY_ADMIN:-admin:ChangeMeNow123!}
 
-    restart: unless-stopped
-
     networks:
       - shared-net
 
     ports:
-      - "25:25/tcp"
-      - "143:143/tcp"
-      - "465:465/tcp"
-      - "587:587/tcp"
-      - "993:993/tcp"
-    
+      - "25:25"
+      - "143:143"
+      - "465:465"
+      - "587:587"
+      - "993:993"
+
     expose:
-      - "8080"
       - "443"
+      - "8080"
 
     volumes:
       - stalwart-data:/var/lib/stalwart
       - stalwart-config:/etc/stalwart
 
-    # healthcheck:
-    #   test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080 >/dev/null || exit 1"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 60s
-
     labels:
       - traefik.enable=true
       - traefik.docker.network=shared-net
-      
-      - traefik.http.routers.stalwart.rule=Host(`${ADMINFQDN:-not-configured.invalid}`)
+
+      #################################################################
+      # Web Admin
+      #################################################################
+
+      - traefik.http.routers.stalwart.rule=Host(`${ADMINFQDN}`)
       - traefik.http.routers.stalwart.entrypoints=websecure
       - traefik.http.routers.stalwart.tls=true
       - traefik.http.routers.stalwart.tls.certresolver=letsencrypt
+
       - traefik.http.services.stalwart.loadbalancer.server.port=8080
 
-      - traefik.tcp.routers.mail.rule=HostSNI(`${FQDN:-not-configured.invalid}`)
+      #################################################################
+      # Mail TLS Passthrough
+      #################################################################
+
+      - traefik.tcp.routers.mail.rule=HostSNI(`${FQDN}`)
       - traefik.tcp.routers.mail.entrypoints=websecure
       - traefik.tcp.routers.mail.tls.passthrough=true
+
       - traefik.tcp.services.mail.loadbalancer.server.port=443
-      - traefik.tcp.routers.mail.serversTransport=mail-transport
-      - traefik.tcp.serversTransports.mail-transport.proxyProtocol.version=2
 
+      #################################################################
+      # Deprecated Proxy Protocol
+      #################################################################
 
-
+      - traefik.tcp.services.mail.loadbalancer.proxyProtocol.version=2
 
 volumes:
   stalwart-data:
@@ -62,9 +65,6 @@ volumes:
 
   stalwart-config:
     name: stalwart-config
-
-  certs:
-    external: true
 
 networks:
   shared-net:

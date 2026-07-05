@@ -46,17 +46,14 @@ services:
       # Mail TLS Passthrough with ProxyProtocol
       #################################################################
 
-      # Роутер
       - traefik.tcp.routers.mail.rule=HostSNI(`${FQDN}`)
       - traefik.tcp.routers.mail.entrypoints=websecure
       - traefik.tcp.routers.mail.tls.passthrough=true
-      - traefik.tcp.routers.mail.serversTransport=mail-transport@docker
-
-      # Транспорт с ProxyProtocol
-      - traefik.tcp.serversTransports.mail-transport.proxyProtocol.version=2
-
-      # Сервис
+      - traefik.tcp.routers.mail.middlewares=mail-proxy@docker
       - traefik.tcp.services.mail.loadbalancer.server.port=443
+      
+      # Middleware для ProxyProtocol
+      - traefik.tcp.middlewares.mail-proxy.proxyProtocol.version=2
 
 volumes:
   stalwart-data:

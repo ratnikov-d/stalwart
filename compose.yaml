@@ -46,18 +46,12 @@ services:
       #################################################################
       # Mail TLS Passthrough
       #################################################################
-      # Изменяем http на tcp для роутера и привязываем к websecure
       - "traefik.tcp.routers.mail.entrypoints=websecure"
-      - "traefik.tcp.routers.mail.rule=HostSNI(`mail.ratnikov.su`)" # Если используется TLS passthrough
-      # ИЛИ если это чистый TCP без TLS (для сторонних портов, отличных от 443):
-      # - "traefik.tcp.routers.mail.rule=HostSNI(`*`)"
-
-      # Направляем на TCP-сервис и подключаем наш транспорт
+      - "traefik.tcp.routers.mail.rule=HostSNI(`*`)" # Позволяет Stalwart самому управлять TLS/SSL
       - "traefik.tcp.routers.mail.service=mail-backend"
       - "traefik.tcp.services.mail-backend.loadbalancer.serverstransport=mail-transport@file"
-      
-      # Не забываем указать порт, куда слать трафик внутри контейнера mail
-      - "traefik.tcp.services.mail-backend.loadbalancer.servers[0].port=443"
+      # Исправленная строка:
+      - "traefik.tcp.services.mail-backend.loadbalancer.port=443"
 
 volumes:
   stalwart-data:

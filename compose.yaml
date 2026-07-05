@@ -36,22 +36,28 @@ services:
       # Web Admin
       #################################################################
 
-      # - traefik.http.routers.stalwart.rule=Host(`${ADMINFQDN}`)
-      # - traefik.http.routers.stalwart.entrypoints=websecure
-      # - traefik.http.routers.stalwart.tls=true
-      # - traefik.http.routers.stalwart.tls.certresolver=letsencrypt
+      - traefik.http.routers.stalwart.rule=Host(`${ADMINFQDN}`)
+      - traefik.http.routers.stalwart.entrypoints=websecure
+      - traefik.http.routers.stalwart.tls=true
+      - traefik.http.routers.stalwart.tls.certresolver=letsencrypt
 
-      # - traefik.http.services.stalwart.loadbalancer.server.port=8080
+      - traefik.http.services.stalwart.loadbalancer.server.port=8080
 
       #################################################################
       # Mail TLS Passthrough
       #################################################################
-      - "traefik.tcp.routers.mail.entrypoints=websecure"
-      - "traefik.tcp.routers.mail.rule=HostSNI(`*`)" # Позволяет Stalwart самому управлять TLS/SSL
-      - "traefik.tcp.routers.mail.service=mail-backend"
-      - "traefik.tcp.services.mail-backend.loadbalancer.serverstransport=mail-transport@file"
-      # Исправленная строка:
-      - "traefik.tcp.services.mail-backend.loadbalancer.port=443"
+
+      - traefik.tcp.routers.mail.rule=HostSNI(`${FQDN}`)
+      - traefik.tcp.routers.mail.entrypoints=websecure
+      - traefik.tcp.routers.mail.tls.passthrough=true
+
+      - traefik.tcp.services.mail.loadbalancer.server.port=443
+
+      #################################################################
+      # Deprecated Proxy Protocol
+      #################################################################
+
+      - traefik.tcp.services.mail.loadbalancer.proxyProtocol.version=2
 
 volumes:
   stalwart-data:

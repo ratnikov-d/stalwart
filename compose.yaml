@@ -50,7 +50,8 @@ services:
       - traefik.tcp.routers.mail.entrypoints=websecure
       - traefik.tcp.routers.mail.tls.passthrough=true
       - traefik.tcp.services.mail.loadbalancer.server.port=443
-      - traefik.tcp.services.mail.loadbalancer.serverstransport=stalwart-proxy@file
+      - traefik.tcp.services.mail.loadbalancer.proxyProtocol.version=2
+
 
 volumes:
   stalwart-data:

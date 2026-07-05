@@ -44,20 +44,21 @@ services:
       - traefik.http.services.stalwart.loadbalancer.server.port=8080
 
       #################################################################
-      # Mail TLS Passthrough
+      # Mail TLS Passthrough with ProxyProtocol (NEW)
       #################################################################
 
       - traefik.tcp.routers.mail.rule=HostSNI(`${FQDN}`)
       - traefik.tcp.routers.mail.entrypoints=websecure
       - traefik.tcp.routers.mail.tls.passthrough=true
+      
+      # Применяем ServersTransport к роутеру
+      - traefik.tcp.routers.mail.serversTransport=mail-transport
 
+      # Создаем ServersTransport с ProxyProtocol (вместо deprecated)
+      - traefik.tcp.serversTransports.mail-transport.proxyProtocol.version=2
+
+      # Сервис (без proxyProtocol, он теперь в транспорте)
       - traefik.tcp.services.mail.loadbalancer.server.port=443
-
-      #################################################################
-      # Deprecated Proxy Protocol
-      #################################################################
-
-      - traefik.tcp.services.mail.loadbalancer.proxyProtocol.version=2
 
 volumes:
   stalwart-data:

@@ -36,12 +36,12 @@ services:
       # Web Admin
       #################################################################
 
-      - traefik.http.routers.stalwart.rule=Host(`${ADMINFQDN}`)
-      - traefik.http.routers.stalwart.entrypoints=websecure
-      - traefik.http.routers.stalwart.tls=true
-      - traefik.http.routers.stalwart.tls.certresolver=letsencrypt
+      # - traefik.http.routers.stalwart.rule=Host(`${ADMINFQDN}`)
+      # - traefik.http.routers.stalwart.entrypoints=websecure
+      # - traefik.http.routers.stalwart.tls=true
+      # - traefik.http.routers.stalwart.tls.certresolver=letsencrypt
 
-      - traefik.http.services.stalwart.loadbalancer.server.port=8080
+      # - traefik.http.services.stalwart.loadbalancer.server.port=8080
 
       #################################################################
       # Mail TLS Passthrough

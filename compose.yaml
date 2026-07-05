@@ -51,11 +51,6 @@ services:
       - traefik.tcp.routers.mail.rule=HostSNI(`${FQDN:-not-configured.invalid}`)
       - traefik.tcp.routers.mail.entrypoints=websecure
       - traefik.tcp.routers.mail.tls.passthrough=true
-
-      # - traefik.tcp.routers.mail.serversTransport=mail-transport
-
-      # - traefik.tcp.serversTransports.mail-transport.proxyProtocol.version=2
-
       - traefik.tcp.services.mail.loadbalancer.server.port=443
       
 

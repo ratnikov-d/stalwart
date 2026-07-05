@@ -45,7 +45,6 @@ services:
       - traefik.http.routers.stalwart.tls=true
       - traefik.http.routers.stalwart.tls.certresolver=letsencrypt
       - traefik.http.services.stalwart.loadbalancer.server.port=8080
-      - traefik.tcp.services.stalwart.loadbalancer.proxyProtocol.version=2
 
       - traefik.tcp.routers.mail.rule=HostSNI(`${FQDN:-not-configured.invalid}`)
       - traefik.tcp.routers.mail.entrypoints=websecure

@@ -19,7 +19,6 @@ services:
       - "465:465"
       - "587:587"
       - "993:993"
-      - "8080:8080"
 
     expose:
       - "443"
@@ -48,11 +47,10 @@ services:
       # Mail TLS Passthrough
       #################################################################
 
-      - traefik.tcp.routers.mail.rule=HostSNI(`${FQDN}`)
-      - traefik.tcp.routers.mail.entrypoints=websecure
-      - traefik.tcp.routers.mail.tls.passthrough=true
-      - traefik.tcp.routers.mail.serversTransport=mail-transport@file
-      - traefik.tcp.services.mail.loadbalancer.server.port=443
+      - traefik.http.routers.mail.rule=HostSNI(`${FQDN}`)
+      - traefik.http.routers.mail.entrypoints=websecure
+      - traefik.http.services.mail.loadbalancer.server.port=443
+      - traefik.http.services.mail.loadbalancer.serverstransport=mail-transport@file
 
 volumes:
   stalwart-data:
